@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Quran Assessment Booking — Quran Master Online</title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --emerald: #1a6b47; --emerald-light: #22a86e; --emerald-dark: #0e3d28;
+    --gold: #c9a84c; --gold-light: #f0d080;
+    --cream: #faf6ef; --cream-dark: #f0e9d8;
+    --text: #1c1a17; --muted: #6b6558;
+    --shadow: 0 4px 24px rgba(14,61,40,0.10);
+    --shadow-lg: 0 8px 40px rgba(14,61,40,0.16);
+  }
+  *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+  html { background:#faf6ef; color-scheme:light; }
+  body { font-family:'DM Sans',sans-serif; background:#faf6ef !important; color:#1c1a17 !important; min-height:100vh; -webkit-text-size-adjust:100%; color-scheme:light !important; }
+  @media(prefers-color-scheme:dark){ html,body{ background:#faf6ef !important; color:#1c1a17 !important; color-scheme:light !important; } }
+
+  header { background:#0e3d28; padding:18px 28px; display:flex; align-items:center; gap:14px; position:relative; overflow:hidden; }
+  header::before { content:''; position:absolute; inset:0; background:repeating-linear-gradient(60deg,transparent,transparent 40px,rgba(201,168,76,0.05) 40px,rgba(201,168,76,0.05) 42px); pointer-events:none; }
+  .hicon { width:46px;height:46px;background:#c9a84c;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;position:relative;z-index:1; }
+  .htxt { position:relative;z-index:1; }
+  .htxt h1 { font-family:'Amiri',serif;font-size:21px;color:#fff;line-height:1.2; }
+  .htxt p  { font-size:12px;color:#f0d080;margin-top:2px; }
+
+  .tabs { display:flex;background:#0e3d28;padding:0 28px;border-bottom:2px solid #1a6b47; }
+  .tab  { padding:11px 22px;font-size:14px;font-weight:500;color:rgba(255,255,255,0.45);cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .2s;user-select:none; }
+  .tab.active { color:#f0d080;border-bottom-color:#c9a84c; }
+  .page { display:none; } .page.active { display:block; }
+
+  .sync-bar { display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:600;padding:8px 14px;border-radius:8px;margin-bottom:18px; }
+  .sync-bar.live    { background:#dcfce7;color:#15803d; }
+  .sync-bar.loading { background:#fef9c3;color:#854d0e; }
+  .sync-bar.error   { background:#fee2e2;color:#b91c1c; }
+  .sdot { width:8px;height:8px;border-radius:50%;flex-shrink:0; }
+  .sync-bar.live .sdot    { background:#22c55e; }
+  .sync-bar.loading .sdot { background:#eab308;animation:blink 1s infinite; }
+  .sync-bar.error .sdot   { background:#ef4444; }
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+
+  .booking-wrap { max-width:880px;margin:30px auto;padding:0 18px; }
+  .admin-wrap   { max-width:980px;margin:30px auto;padding:0 18px; }
+  .sec-title { font-family:'Amiri',serif;font-size:25px;color:#0e3d28;margin-bottom:5px; }
+  .sec-sub   { font-size:14px;color:#6b6558;margin-bottom:18px;line-height:1.5; }
+
+  .form-card { background:#fff;border-radius:16px;padding:26px;box-shadow:var(--shadow);margin-bottom:24px;border:1px solid #f0e9d8; }
+  .form-card h3 { font-size:15px;font-weight:600;color:#1a6b47;margin-bottom:16px; }
+  .form-row { display:grid;grid-template-columns:1fr 1fr;gap:13px; }
+  .fg { display:flex;flex-direction:column;gap:5px; }
+  .fg label { font-size:11px;font-weight:700;color:#6b6558;letter-spacing:.06em;text-transform:uppercase; }
+  .fg input,.fg select { padding:10px 13px;border:1.5px solid #f0e9d8;border-radius:9px;font-size:14px;font-family:'DM Sans',sans-serif;background:#faf6ef !important;color:#1c1a17 !important;transition:border-color .2s;-webkit-appearance:none;appearance:none;width:100%; }
+  .fg select { background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath fill='%236b6558' d='M5 6L0 0h10z'/%3E%3C/svg%3E") !important;background-repeat:no-repeat !important;background-position:right 13px center !important;padding-right:34px !important; }
+  .fg input:focus,.fg select:focus { outline:none;border-color:#22a86e;background:#fff !important; }
+
+  .week-banner { display:inline-flex;align-items:center;gap:7px;background:rgba(26,107,71,0.09);border:1px solid rgba(26,107,71,0.22);border-radius:9px;padding:9px 15px;font-size:13px;font-weight:600;color:#0e3d28;margin-bottom:12px; }
+
+  .days-grid { display:grid;grid-template-columns:repeat(auto-fill,minmax(225px,1fr));gap:15px;margin-bottom:24px; }
+  .day-card { background:#fff;border-radius:13px;overflow:hidden;box-shadow:var(--shadow);border:1.5px solid #f0e9d8;transition:transform .2s,box-shadow .2s; }
+  .day-card:hover { transform:translateY(-2px);box-shadow:var(--shadow-lg); }
+  .dhead { background:#0e3d28;padding:12px 15px; }
+  .dname-row { display:flex;justify-content:space-between;align-items:center;font-weight:600;font-size:14px;color:#fff; }
+  .ddate-row { font-size:11px;color:#f0d080;margin-top:3px; }
+  .dbadge { background:rgba(201,168,76,0.32);color:#f0d080;font-size:11px;padding:2px 8px;border-radius:16px;font-weight:600; }
+  .slots-list { padding:9px 11px;display:flex;flex-direction:column;gap:5px;background:#fff; }
+  .slot-item { display:flex;align-items:center;justify-content:space-between;padding:9px 12px;border-radius:8px;border:1.5px solid #f0e9d8;cursor:pointer;transition:all .15s;font-size:13px;background:#fff !important;color:#1c1a17 !important;-webkit-tap-highlight-color:transparent; }
+  .slot-item:hover:not(.booked):not(.sel) { border-color:#22a86e;background:#f0faf5 !important; }
+  .slot-item:active:not(.booked):not(.sel){ background:#e6f7ef !important; }
+  .slot-item.booked { background:#fef2f2 !important;border-color:#fecaca !important;color:#9b2626 !important;cursor:not-allowed; }
+  .slot-item.sel    { background:#0e3d28 !important;border-color:#0e3d28 !important;color:#fff !important; }
+  .stag { font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:3px 8px;border-radius:9px;flex-shrink:0; }
+  .slot-item.booked .stag { background:#fee2e2;color:#b91c1c; }
+  .slot-item.sel    .stag { background:#c9a84c;color:#0e3d28; }
+  .slot-item:not(.booked):not(.sel) .stag { background:#dcfce7;color:#15803d; }
+
+  .book-btn { width:100%;padding:15px;background:#1a6b47;color:#fff !important;border:none;border-radius:12px;font-size:15px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;transition:background .2s; }
+  .book-btn:hover:not(:disabled){ background:#22a86e; }
+  .book-btn:disabled { background:#9ca3af !important;cursor:not-allowed; }
+
+  .loading-overlay { position:fixed;inset:0;background:rgba(14,61,40,0.55);display:none;flex-direction:column;align-items:center;justify-content:center;z-index:9000;gap:16px; }
+  .loading-overlay .spinner { width:44px;height:44px;border:4px solid rgba(255,255,255,0.2);border-top-color:#c9a84c;border-radius:50%;animation:spin .7s linear infinite; }
+  .loading-overlay p { color:#fff;font-size:15px;font-weight:500; }
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  .toast { position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(100px);background:#0e3d28;color:#fff;padding:13px 22px;border-radius:12px;font-size:14px;box-shadow:var(--shadow-lg);transition:transform .3s cubic-bezier(.34,1.56,.64,1);z-index:9999;border-left:4px solid #c9a84c;max-width:90vw;text-align:center;line-height:1.4; }
+  .toast.show { transform:translateX(-50%) translateY(0); }
+
+  .admin-login { background:#fff;border-radius:16px;padding:40px;max-width:380px;margin:60px auto;box-shadow:var(--shadow-lg);text-align:center;border:1px solid #f0e9d8; }
+  .admin-login h2 { font-family:'Amiri',serif;font-size:22px;color:#0e3d28;margin-bottom:6px; }
+  .admin-login p  { font-size:13px;color:#6b6558;margin-bottom:22px; }
+  .admin-login input { width:100%;padding:11px 13px;border:1.5px solid #f0e9d8;border-radius:9px;font-size:14px;font-family:'DM Sans',sans-serif;margin-bottom:12px;background:#faf6ef !important;color:#1c1a17 !important; }
+  .admin-login input:focus { outline:none;border-color:#22a86e; }
+  .login-btn { width:100%;padding:12px;background:#1a6b47;color:#fff;border:none;border-radius:9px;font-size:14px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer; }
+  .login-btn:hover { background:#22a86e; }
+  .err-msg { color:#c0392b;font-size:13px;margin-top:8px; }
+
+  .admin-panel>h2 { font-family:'Amiri',serif;font-size:25px;color:#0e3d28;margin-bottom:5px; }
+  .stats-row { display:grid;grid-template-columns:repeat(3,1fr);gap:13px;margin-bottom:24px; }
+  .stat-card { background:#fff;border-radius:12px;padding:18px;box-shadow:var(--shadow);border:1px solid #f0e9d8;text-align:center; }
+  .stat-card .num { font-size:30px;font-weight:700;color:#1a6b47;font-family:'Amiri',serif; }
+  .stat-card .lbl { font-size:12px;color:#6b6558;margin-top:3px; }
+
+  .bookings-table { background:#fff;border-radius:13px;overflow:hidden;box-shadow:var(--shadow);border:1px solid #f0e9d8;margin-bottom:20px; }
+  .tbl-header { background:#0e3d28;color:#fff;padding:13px 18px;font-size:14px;font-weight:600;display:flex;align-items:center;justify-content:space-between; }
+  .refresh-btn { background:rgba(201,168,76,0.2);color:#f0d080;border:1px solid rgba(201,168,76,0.4);padding:5px 12px;border-radius:6px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600; }
+  .refresh-btn:hover { background:rgba(201,168,76,0.35); }
+  .tbl-wrap { overflow-x:auto; }
+  table { width:100%;border-collapse:collapse;min-width:760px; }
+  th { background:#f8f4ee;padding:9px 13px;font-size:11px;font-weight:700;color:#6b6558;text-transform:uppercase;letter-spacing:.06em;text-align:left;white-space:nowrap; }
+  td { padding:10px 13px;font-size:13px;border-top:1px solid #f0e9d8;vertical-align:middle;color:#1c1a17; }
+  tr:hover td { background:#fafaf7; }
+  .tbadge { background:#0e3d28;color:#fff;font-size:11px;padding:3px 9px;border-radius:16px;font-weight:600;white-space:nowrap; }
+  .gbadge { background:#eff6ee;color:#1a6b47;font-size:11px;padding:3px 9px;border-radius:16px;font-weight:600; }
+  .del-btn { background:#fee2e2;color:#b91c1c;border:1px solid #fecaca;padding:5px 11px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif; }
+  .del-btn:hover { background:#fecaca; }
+  .logout-btn { background:transparent;border:1px solid rgba(201,168,76,0.4);color:#f0d080;padding:7px 15px;border-radius:8px;font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;margin-left:auto;display:block;margin-bottom:14px; }
+  .empty-state { text-align:center;padding:44px 20px;color:#6b6558; }
+
+  @media(max-width:600px){
+    .form-row{grid-template-columns:1fr} .stats-row{grid-template-columns:1fr 1fr}
+    header{padding:14px 16px} .tabs{padding:0 14px}
+    .booking-wrap,.admin-wrap{padding:0 13px} .form-card{padding:18px}
+  }
+</style>
+</head>
+<body>
+
+<div class="loading-overlay" id="loadingOverlay" style="display:flex;">
+  <div class="spinner"></div>
+  <p id="loaderMsg">Loading available slots…</p>
+</div>
+
+<header>
+  <div class="hicon">🕌</div>
+  <div class="htxt">
+    <h1>Quran Master Online</h1>
+    <p>Assessment Booking — Olevels.com School Admissions</p>
+  </div>
+</header>
+
+<div class="tabs">
+  <div class="tab active" id="tab-booking" onclick="showTab('booking')">📅 Book a Slot</div>
+  <div class="tab" id="tab-admin"   onclick="showTab('admin')">⚙ Admin Panel</div>
+</div>
+
+<!-- BOOKING -->
+<div class="page active" id="page-booking">
+  <div class="booking-wrap">
+    <h2 class="sec-title" style="margin-top:10px;">📖 Schedule Your Quran Assessment</h2>
+    <p class="sec-sub">Each session is 15 minutes. Fill in the student's details, then pick an available slot.</p>
+
+    <div class="sync-bar loading" id="syncBar"><div class="sdot"></div><span id="syncMsg">Connecting…</span></div>
+
+    <div class="form-card">
+      <h3>✏️ Student Information</h3>
+      <div class="form-row">
+        <div class="fg"><label>Student Name</label><input type="text" id="sStudentName" placeholder="e.g. Ahmed Ali" autocomplete="off"/></div>
+        <div class="fg"><label>Parent Name</label><input type="text" id="sParentName" placeholder="e.g. Mohammad Ali" autocomplete="off"/></div>
+        <div class="fg"><label>Student Age</label><input type="number" id="sAge" placeholder="e.g. 10" min="3" max="25"/></div>
+        <div class="fg">
+          <label>Grade / Class</label>
+          <select id="sGrade">
+            <option value="">— Select Grade —</option>
+            <option>KG</option><option>Grade 1</option><option>Grade 2</option>
+            <option>Grade 3</option><option>Grade 4</option>
+            <option>Foundation</option><option>O-Levels</option>
+          </select>
+        </div>
+        <div class="fg"><label>Contact Phone</label><input type="tel" id="sPhone" placeholder="e.g. +92 300 1234567"/></div>
+        <div class="fg"><label>Email Address</label><input type="email" id="sEmail" placeholder="e.g. parent@email.com"/></div>
+      </div>
+    </div>
+
+    <h3 class="sec-title" style="font-size:20px;margin-bottom:10px;">🗓 Available Slots This Week</h3>
+    <div class="week-banner" id="weekBanner">📆 Loading…</div>
+    <p class="sec-sub" style="margin-top:8px;">
+      <span style="color:#1a6b47;font-weight:700;">Green = Available</span> &nbsp;|&nbsp;
+      <span style="color:#b91c1c;font-weight:700;">Red = Booked</span>
+    </p>
+    <div class="days-grid" id="daysGrid"></div>
+    <button class="book-btn" id="bookBtn" onclick="confirmBooking()" disabled>🔒 Select a slot to continue</button>
+  </div>
+</div>
+
+<!-- ADMIN -->
+<div class="page" id="page-admin">
+  <div class="admin-wrap">
+    <div id="adminLogin" class="admin-login">
+      <div style="font-size:40px;margin-bottom:10px;">🔐</div>
+      <h2>Admin Access</h2>
+      <p>Enter the admin password to manage all bookings</p>
+      <input type="password" id="adminPass" placeholder="Password" onkeydown="if(event.key==='Enter')doLogin()"/>
+      <button class="login-btn" onclick="doLogin()">Login</button>
+      <div class="err-msg" id="loginErr"></div>
+    </div>
+    <div id="adminPanel" class="admin-panel" style="display:none;">
+      <button class="logout-btn" onclick="doLogout()">← Logout</button>
+      <h2>Admin Panel</h2>
+      <p class="sec-sub" style="margin-bottom:18px;">All reserved slots — <span id="adminWeekLabel"></span></p>
+      <div class="stats-row" id="statsRow"></div>
+      <div class="bookings-table">
+        <div class="tbl-header">
+          <span>📋 Reservations</span>
+          <button class="refresh-btn" onclick="adminRefresh()">↻ Refresh</button>
+        </div>
+        <div class="tbl-wrap" id="bookingsBody"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><span id="toastMsg"></span></div>
+
+<script>
+// ══════════════════════════════
+// CONFIG
+// ══════════════════════════════
+const ADMIN_PW   = 'quranmaster2024';
+const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbyGOlcCuAA0ZwO_10EHNeHDVvBK1j9Dmzc3nV88GKWAimwhbQi3gq0_UKVDb0M0XGvf/exec';
+
+const DAY_SCHED = {
+  1:{name:'Monday',   slots:['4:30 PM','4:45 PM']},
+  2:{name:'Tuesday',  slots:['4:30 PM','4:45 PM']},
+  3:{name:'Wednesday',slots:['4:00 PM','4:15 PM','4:30 PM','4:45 PM']},
+  4:{name:'Thursday', slots:['4:00 PM','4:15 PM','4:30 PM','4:45 PM','5:00 PM','5:15 PM','5:30 PM','5:45 PM']},
+  6:{name:'Saturday', slots:['1:00 PM','1:15 PM','1:30 PM','1:45 PM','4:00 PM','4:15 PM','4:30 PM','4:45 PM']},
+  0:{name:'Sunday',   slots:['1:00 PM','1:15 PM','1:30 PM','1:45 PM','4:00 PM','4:15 PM','4:30 PM','4:45 PM']},
+};
+
+// ══════════════════════════════
+// STATE
+// ══════════════════════════════
+let bookings    = {};
+let selSlot     = null;
+let weekDays    = [];
+let adminLogged = false;
+let isBusy      = false;
+
+// ══════════════════════════════
+// DATE HELPERS
+// ══════════════════════════════
+function toISO(d){ return d.toISOString().split('T')[0]; }
+function fmtDate(d){ return d.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'}); }
+function slotKey(iso,t){ return iso+'__'+t.replace(/[\s:]/g,''); }
+
+function buildWeek(){
+  const today=new Date(); today.setHours(0,0,0,0);
+  const days=[];
+  for(let i=0;i<7;i++){
+    const d=new Date(today); d.setDate(today.getDate()+i);
+    const dow=d.getDay();
+    if(DAY_SCHED[dow]) days.push({isoDate:toISO(d),label:fmtDate(d),dow,...DAY_SCHED[dow]});
+  }
+  return days;
+}
+
+// ══════════════════════════════
+// JSONP — bypasses CORS for GET
+// ══════════════════════════════
+function jsonpFetch(url){
+  return new Promise((resolve,reject)=>{
+    const cbName = 'cb_'+Date.now();
+    const script = document.createElement('script');
+    const timer  = setTimeout(()=>{ cleanup(); reject(new Error('JSONP timeout')); }, 10000);
+
+    window[cbName] = function(data){
+      cleanup();
+      resolve(data);
+    };
+
+    function cleanup(){
+      clearTimeout(timer);
+      delete window[cbName];
+      if(script.parentNode) script.parentNode.removeChild(script);
+    }
+
+    script.onerror = ()=>{ cleanup(); reject(new Error('JSONP script error')); };
+    script.src = url + (url.includes('?')?'&':'?') + 'callback='+cbName+'&nocache='+Date.now();
+    document.head.appendChild(script);
+  });
+}
+
+// ══════════════════════════════
+// POST via hidden form (no-cors)
+// Writes to Sheets, no response needed
+// ══════════════════════════════
+function postToSheets(payload){
+  return new Promise((resolve)=>{
+    // Use fetch with no-cors — we can't read response but write still works
+    fetch(SHEETS_URL, {
+      method:'POST',
+      mode:'no-cors',
+      headers:{'Content-Type':'text/plain'},
+      body: JSON.stringify(payload)
+    }).then(()=>resolve(true)).catch(()=>resolve(false));
+  });
+}
+
+// ══════════════════════════════
+// LOAD BOOKINGS (JSONP)
+// ══════════════════════════════
+async function fetchBookings(){
+  setSyncBar('loading','Loading slots from Google Sheets…');
+  try{
+    const data = await jsonpFetch(SHEETS_URL);
+    bookings = data || {};
+    try{ localStorage.setItem('qm_cache',JSON.stringify(bookings)); }catch(e){}
+    setSyncBar('live','✅ Live — synced with Google Sheets');
+    return true;
+  }catch(e){
+    console.warn('Sheets fetch failed, using cache',e);
+    try{ const c=localStorage.getItem('qm_cache'); bookings=c?JSON.parse(c):{}; }catch(e2){ bookings={}; }
+    setSyncBar('error','⚠️ Offline — showing cached data');
+    return false;
+  }
+}
+
+// ══════════════════════════════
+// SYNC BAR
+// ══════════════════════════════
+function setSyncBar(mode,msg){
+  const bar=document.getElementById('syncBar');
+  bar.className='sync-bar '+mode;
+  document.getElementById('syncMsg').textContent=msg;
+}
+
+// ══════════════════════════════
+// RENDER SLOTS
+// ══════════════════════════════
+function renderSlots(){
+  const grid=document.getElementById('daysGrid');
+  grid.innerHTML='';
+  weekDays.forEach(day=>{
+    const free=day.slots.filter(t=>!bookings[slotKey(day.isoDate,t)]).length;
+    const div=document.createElement('div');
+    div.className='day-card';
+    div.innerHTML=`
+      <div class="dhead">
+        <div class="dname-row"><span>${day.name}</span><span class="dbadge">${free} free</span></div>
+        <div class="ddate-row">📅 ${day.label}</div>
+      </div>
+      <div class="slots-list">
+        ${day.slots.map(t=>{
+          const key=slotKey(day.isoDate,t);
+          const taken=!!bookings[key];
+          const isSel=selSlot&&selSlot.key===key;
+          const cls=taken?'booked':isSel?'sel':'';
+          const tag=taken?'Booked':isSel?'Selected':'Free';
+          const click=taken?'':`onclick="pickSlot('${day.isoDate}','${day.label}','${day.name}','${t}','${key}')"`;
+          return `<div class="slot-item ${cls}" ${click}>
+            <span>${t}</span><span class="stag">${tag}</span>
+          </div>`;
+        }).join('')}
+      </div>`;
+    grid.appendChild(div);
+  });
+  refreshBtn();
+}
+
+function pickSlot(iso,label,dayName,time,key){
+  if(bookings[key]) return;
+  selSlot={isoDate:iso,label,dayName,time,key};
+  renderSlots();
+}
+
+function refreshBtn(){
+  const btn=document.getElementById('bookBtn');
+  if(selSlot){ btn.disabled=false; btn.textContent=`✅ Confirm: ${selSlot.label} at ${selSlot.time}`; }
+  else        { btn.disabled=true;  btn.textContent='🔒 Select a slot to continue'; }
+}
+
+// ══════════════════════════════
+// CONFIRM BOOKING
+// ══════════════════════════════
+async function confirmBooking(){
+  if(isBusy) return;
+  const sn=document.getElementById('sStudentName').value.trim();
+  const pn=document.getElementById('sParentName').value.trim();
+  const ag=document.getElementById('sAge').value.trim();
+  const gr=document.getElementById('sGrade').value;
+  const ph=document.getElementById('sPhone').value.trim();
+  const em=document.getElementById('sEmail').value.trim();
+
+  if(!sn||!pn||!ag||!gr||!ph||!em){ toast('⚠️ Please fill in all fields.'); return; }
+  if(!selSlot){ toast('⚠️ Please select a time slot.'); return; }
+
+  isBusy=true;
+  showLoader('Checking slot availability…');
+
+  // Re-fetch to make sure slot is still free
+  await fetchBookings();
+
+  if(bookings[selSlot.key]){
+    hideLoader(); isBusy=false;
+    toast('⚠️ That slot was just taken — please pick another.');
+    selSlot=null; renderSlots(); return;
+  }
+
+  const entry={
+    action:'book',
+    studentName:sn, parentName:pn, age:ag, grade:gr,
+    phone:ph, email:em,
+    dayName:selSlot.dayName, date:selSlot.label,
+    isoDate:selSlot.isoDate, time:selSlot.time,
+    slotKey:selSlot.key,
+    bookedAt:new Date().toISOString()
+  };
+
+  showLoader('Saving your booking…');
+  await postToSheets(entry);
+
+  // Optimistically update local state immediately
+  bookings[selSlot.key]=entry;
+  try{ localStorage.setItem('qm_cache',JSON.stringify(bookings)); }catch(e){}
+
+  const firstName=sn.split(' ')[0];
+  toast(`🎉 Booked! ${selSlot.label} at ${selSlot.time} — See you, ${firstName}!`);
+  ['sStudentName','sParentName','sAge','sPhone','sEmail'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('sGrade').value='';
+  selSlot=null;
+  renderSlots();
+  setSyncBar('live','✅ Booking saved to Google Sheets');
+
+  isBusy=false;
+  hideLoader();
+}
+
+// ══════════════════════════════
+// ADMIN
+// ══════════════════════════════
+function doLogin(){
+  if(document.getElementById('adminPass').value===ADMIN_PW){
+    adminLogged=true;
+    document.getElementById('adminLogin').style.display='none';
+    document.getElementById('adminPanel').style.display='block';
+    renderAdmin();
+  } else {
+    document.getElementById('loginErr').textContent='Incorrect password.';
+  }
+}
+function doLogout(){
+  adminLogged=false;
+  document.getElementById('adminLogin').style.display='block';
+  document.getElementById('adminPanel').style.display='none';
+  document.getElementById('adminPass').value='';
+  document.getElementById('loginErr').textContent='';
+}
+
+async function adminRefresh(){
+  showLoader('Refreshing from Google Sheets…');
+  await fetchBookings();
+  hideLoader();
+  renderSlots();
+  renderAdmin();
+  toast('✅ Refreshed from Google Sheets');
+}
+
+function renderAdmin(){
+  const all=Object.values(bookings);
+  const totalSlots=weekDays.reduce((s,d)=>s+d.slots.length,0);
+
+  if(weekDays.length){
+    document.getElementById('adminWeekLabel').textContent=
+      weekDays[0].label+' – '+weekDays[weekDays.length-1].label;
+  }
+
+  document.getElementById('statsRow').innerHTML=`
+    <div class="stat-card"><div class="num">${all.length}</div><div class="lbl">Booked</div></div>
+    <div class="stat-card"><div class="num">${totalSlots-all.length}</div><div class="lbl">Available</div></div>
+    <div class="stat-card"><div class="num">${totalSlots}</div><div class="lbl">Total Slots</div></div>`;
+
+  const body=document.getElementById('bookingsBody');
+  if(!all.length){
+    body.innerHTML='<div class="empty-state"><div style="font-size:38px">📭</div><div style="margin-top:10px;font-size:14px">No bookings yet this week</div></div>';
+    return;
+  }
+
+  all.sort((a,b)=>(a.isoDate+a.time).localeCompare(b.isoDate+b.time));
+  body.innerHTML=`
+    <table>
+      <thead><tr>
+        <th>Student</th><th>Parent</th><th>Age</th><th>Grade</th>
+        <th>Phone</th><th>Email</th><th>Date</th><th>Time</th><th>Delete</th>
+      </tr></thead>
+      <tbody>
+        ${all.map(b=>{
+          const k=b.slotKey||slotKey(b.isoDate,b.time);
+          const nE=b.studentName.replace(/'/g,"\\'");
+          const dE=(b.date||b.dayName).replace(/'/g,"\\'");
+          return `<tr>
+            <td><strong>${b.studentName}</strong></td>
+            <td>${b.parentName}</td>
+            <td style="text-align:center">${b.age}</td>
+            <td><span class="gbadge">${b.grade}</span></td>
+            <td>${b.phone}</td>
+            <td style="font-size:12px">${b.email}</td>
+            <td><span class="tbadge">${b.date||b.dayName}</span></td>
+            <td style="font-weight:600">${b.time}</td>
+            <td><button class="del-btn" onclick="adminDelete('${k}','${nE}','${dE}','${b.time}')">🗑 Delete</button></td>
+          </tr>`;
+        }).join('')}
+      </tbody>
+    </table>`;
+}
+
+async function adminDelete(key,name,date,time){
+  if(!confirm(`Delete booking for ${name} on ${date} at ${time}?\n\nThis cannot be undone.`)) return;
+  showLoader('Deleting booking…');
+  await postToSheets({action:'delete', slotKey:key, isoDate:key.split('__')[0], time});
+  delete bookings[key];
+  try{ localStorage.setItem('qm_cache',JSON.stringify(bookings)); }catch(e){}
+  toast(`🗑 Booking for ${name} deleted.`);
+  renderSlots();
+  renderAdmin();
+  hideLoader();
+}
+
+// ══════════════════════════════
+// LOADER / TABS / TOAST
+// ══════════════════════════════
+function showLoader(msg){
+  document.getElementById('loaderMsg').textContent=msg||'Please wait…';
+  document.getElementById('loadingOverlay').style.display='flex';
+}
+function hideLoader(){ document.getElementById('loadingOverlay').style.display='none'; }
+
+function showTab(name){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  document.getElementById('tab-'+name).classList.add('active');
+  if(name==='admin'&&adminLogged) renderAdmin();
+}
+
+function toast(msg){
+  const el=document.getElementById('toast');
+  document.getElementById('toastMsg').textContent=msg;
+  el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'),4500);
+}
+
+// ══════════════════════════════
+// INIT
+// ══════════════════════════════
+async function init(){
+  weekDays=buildWeek();
+  document.getElementById('weekBanner').textContent = weekDays.length
+    ? '📆 '+weekDays[0].label+' – '+weekDays[weekDays.length-1].label
+    : 'No available days in the next 7 days.';
+
+  await fetchBookings();
+  hideLoader();
+  renderSlots();
+}
+
+init();
+
+// Auto-refresh every 60s
+setInterval(async()=>{
+  await fetchBookings();
+  renderSlots();
+  if(adminLogged) renderAdmin();
+}, 60000);
+</script>
+</body>
+</html>
